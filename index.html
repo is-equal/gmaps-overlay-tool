@@ -278,15 +278,9 @@
     });
 
     function updateBBoxValues(bbox) {
-      let sw = bbox.getSouthWest().toJSON();
-      let ne = bbox.getNorthEast().toJSON();
-
-      document.getElementsByName('jbbox')[0].value = JSON.stringify({
-        south: sw.lat, west: sw.lng,
-        north: ne.lat, east: ne.lng
-      });
+      document.getElementsByName('jbbox')[0].value = JSON.stringify(bbox.toJSON());
       document.getElementsByName('nbbox')[0].value = bbox.toUrlValue();
-      document.getElementsByName('bbox')[0].value = JSON.stringify(bbox.toJSON());
+      document.getElementsByName('bbox')[0].value = `[${JSON.stringify(bbox.getSouthWest().toJSON())}, ${JSON.stringify(bbox.getNorthEast().toJSON())}]`;
     }
 
     function initMap() {
