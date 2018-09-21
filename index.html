@@ -57,6 +57,9 @@
       padding: 5px;
       border: 1px solid black;
     }
+    legend {
+      padding: 0 5px;
+    }
     input {
       padding: 10px;
       height: 44px;
@@ -130,7 +133,7 @@
           <form id="imageForm">
             <h3>Image</h3>
             <fieldset>
-              <legend for="imageURL">URL:</legend>
+              <legend for="imageURL">URL</legend>
               <input type="text" name="imageURL" id="imageURL" required placeholder="Set url image here..." value=""
                 autocomplete="off" />
               <button type="button" onclick="Copy('imageURL')">Copy</button>
@@ -140,17 +143,17 @@
           <form id="boundsForm">
             <h3>Bounding Box</h3>
             <fieldset>
-              <legend for="jbbox">Bounds (JSON Format):</legend>
+              <legend for="jbbox">Bounds (JSON Format)</legend>
               <input type="text" name="jbbox" id="jbbox" placeholder="Set bbox here..." value="" autocomplete="off" />
               <button type="button" onclick="Copy('jbbox')">Copy</button>
             </fieldset>
             <fieldset>
-              <legend for="nbbox">Bounds (Number Format):</legend>
+              <legend for="nbbox">Bounds (Number Format)</legend>
               <input type="text" name="nbbox" id="nbbox" placeholder="Set bbox here..." value="" autocomplete="off" />
               <button type="button" onclick="Copy('nbbox')">Copy</button>
             </fieldset>
             <fieldset>
-              <legend for="bbox">Formated Bounding Box:</legend>
+              <legend for="bbox">Formated Bounding Box</legend>
               <input type="text" name="bbox" id="bbox" readonly autocomplete="off" />
               <button type="button" onclick="Copy('bbox')">Copy</button>
             </fieldset>
@@ -159,11 +162,11 @@
           <form>
             <h3>Rotation</h3>
             <fieldset>
-              <legend for="variation">Rotate rate:</legend>
-              <input type="number" name="variation" id="variation" min="0" max="360" step="0.5" value="0.5" />
+              <legend for="rate">Rate</legend>
+              <input type="number" name="rate" id="rate" min="0" max="360" step="0.5" value="0.5" />
             </fieldset>
             <fieldset>
-              <legend for="rotation">Rotation:</legend>
+              <legend for="rotation">Rotation</legend>
               <input type="number" name="rotation" id="rotation" value="0" readonly />
               <button type="button" onclick="Copy('rotation')">Copy</button>
             </fieldset>
@@ -204,8 +207,8 @@
     document.getElementById('rl').addEventListener('mouseup', event => clearInterval(rlPressed));
     document.getElementById('rl').addEventListener('mousedown', event => {
       const click = () => {
-        let variation = document.getElementById('variation');
-        let angle = overlay.getAngle() - parseFloat(variation.value);
+        let rate = document.getElementById('rate');
+        let angle = overlay.getAngle() - parseFloat(rate.value);
 
         overlay.setAngle(angle);
         document.getElementById('rotation').value = angle;
@@ -218,8 +221,8 @@
     document.getElementById('rr').addEventListener('mouseup', event => clearInterval(rrPressed))
     document.getElementById('rr').addEventListener('mousedown', event => {
       const click = () => {
-        let variation = document.getElementById('variation');
-        let angle = overlay.getAngle() + parseFloat(variation.value);
+        let rate = document.getElementById('rate');
+        let angle = overlay.getAngle() + parseFloat(rate.value);
 
         overlay.setAngle(angle);
         document.getElementById('rotation').value = angle;
