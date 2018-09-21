@@ -1,0 +1,129 @@
+  /* Reset */
+
+  * {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      outline: none;
+      font-size: 100%;
+      font: inherit;
+      vertical-align: baseline;
+      box-sizing: border-box;
+      text-align: left;
+  }
+
+  button,
+  input[type=button] {
+      cursor: pointer;
+  }
+
+  a {
+      text-decoration: none;
+  }
+
+  a:hover,
+  a:active,
+  a:visited {
+      text-decoration: none;
+  }
+
+  ol,
+  ul {
+      list-style: none;
+  }
+
+  table {
+      border-collapse: collapse;
+      border-spacing: 0;
+  }
+
+  /* Style */
+
+  html,
+  body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 12px;
+      height: 100%;
+  }
+
+  h3 {
+      font-size: 1.2em;
+      font-weight: bolder;
+      margin: 0.5em 0;
+  }
+
+  fieldset {
+      padding: 5px;
+      border: 1px solid black;
+  }
+
+  legend {
+      padding: 0 5px;
+  }
+
+  input {
+      padding: 10px;
+      height: 44px;
+      border: 1px solid black;
+  }
+
+  button {
+      padding: 10px;
+      height: 44px;
+      min-width: 44px;
+      background-color: #CCCCCC;
+  }
+
+  button:hover {
+      background-color: #a6a6a6;
+  }
+
+  button:active {
+      background-color: gray;
+  }
+
+  hr {
+      background-color: gray;
+      height: 1px;
+  }
+
+  #map {
+      height: 100%;
+  }
+
+  #map-control {
+      position: absolute;
+      z-index: 1;
+  }
+
+  #overlay-tool {
+      position: absolute;
+      top: 96px;
+      left: 0;
+      width: 300px;
+      padding: 5px;
+      background-color: white;
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+  }
+
+  #overlay-tool.visible {
+      left: 0;
+  }
+
+  #overlay-tool.hidden {
+      left: -250px;
+  }
+
+  #overlay-tool form fieldset {
+      margin: 10px auto;
+  }
+
+  #toggleOverlayTool {
+      top: 4px;
+      right: 4px;
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      min-width: auto;
+      min-height: auto;
+  }
