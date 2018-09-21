@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>gmaps-overlay-tool</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <style>
+    /* Reset */
+    * {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        outline: none;
+        font-size: 100%;
+        font: inherit;
+        vertical-align: baseline;
+        box-sizing: border-box;
+        text-align: left;
+    }
+
+    button,
+    input[type=button] {
+        cursor: pointer;
+    }
+
+    a {
+        text-decoration: none;
+    }
+    a:hover,
+    a:active,
+    a:visited {
+        text-decoration: none;
+    }
+
+    ol,
+    ul {
+        list-style: none;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+     /* Style */
+     html, body {
+       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+       font-size: 12px;
+       height: 100%;
+     }
+    h3 {
+      font-size: 1.2em;
+      font-weight: bolder;
+      margin: 0.5em 0;
+    }
+    fieldset {
+      padding: 5px;
+      border: 1px solid black;
+    }
+    input {
+      padding: 10px;
+      height: 44px;
+      border: 1px solid black;
+    }
+    button {
+      padding: 10px;
+      height: 44px;
+      min-width: 44px;
+      background-color: #CCCCCC;
+    }
+    button:hover {
+      background-color: #a6a6a6;
+    }
+    button:active {
+      background-color: gray;
+    }
+    hr {
+      background-color: gray;
+      height: 1px;
+    }
+    #map {
+      height: 100%;
+    }
+
+    #map-control {
+      position: absolute;
+      z-index: 1;
+    }
+
+    #overlay-tool {
+      position: absolute;
+      top: 96px;
+      left: 0;
+      width: 300px;
+      padding: 5px;
+      background-color: white;
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+    }
+
+    #overlay-tool.visible {
+      left: 0;
+    }
+
+    #overlay-tool.hidden {
+      left: -250px;
+    }
+
+    #overlay-tool form fieldset {
+      margin: 10px auto;
+    }
+
+    #toggleOverlayTool {
+      top: 4px;
+      right: 4px;
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      min-width: auto;
+      min-height: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map-control">
+    <div id="overlay-tool" class="visible">
+      <button type="button" id="toggleOverlayTool">
+        <</button> <h3>Overlay Tool: </h3>
+          <hr />
+          <form id="imageForm">
+            <h3>Image</h3>
+            <fieldset>
+              <legend for="imageURL">URL:</legend>
+              <input type="text" name="imageURL" id="imageURL" required placeholder="Set url image here..." value=""
+                autocomplete="off" />
+              <button type="button" onclick="Copy('imageURL')">Copy</button>
+            </fieldset>
+            <button type="submit">Apply</button>
+          </form>
+          <form id="boundsForm">
+            <h3>Bounding Box</h3>
+            <fieldset>
+              <legend for="jbbox">Bounds (JSON Format):</legend>
+              <input type="text" name="jbbox" id="jbbox" placeholder="Set bbox here..." value="" autocomplete="off" />
+              <button type="button" onclick="Copy('jbbox')">Copy</button>
+            </fieldset>
+            <fieldset>
+              <legend for="nbbox">Bounds (Number Format):</legend>
+              <input type="text" name="nbbox" id="nbbox" placeholder="Set bbox here..." value="" autocomplete="off" />
+              <button type="button" onclick="Copy('nbbox')">Copy</button>
+            </fieldset>
+            <fieldset>
+              <legend for="bbox">Formated Bounding Box:</legend>
+              <input type="text" name="bbox" id="bbox" readonly autocomplete="off" />
+              <button type="button" onclick="Copy('bbox')">Copy</button>
+            </fieldset>
+            <button type="submit">Apply</button>
+          </form>
+          <form>
+            <h3>Rotation</h3>
+            <fieldset>
+              <legend for="variation">Rotate rate:</legend>
+              <input type="number" name="variation" id="variation" min="0" max="360" step="0.5" value="0.5" />
+            </fieldset>
+            <fieldset>
+              <legend for="rotation">Rotation:</legend>
+              <input type="number" name="rotation" id="rotation" value="0" readonly />
+              <button type="button" onclick="Copy('rotation')">Copy</button>
+            </fieldset>
+            <button type="button" id="rl">Rotate to Left</button>
+            <button type="button" id="rr">Rotate to Rigth</button>
+          </form>
+    </div>
+  </div>
+  <div id="map"></div>
+  <script>
+    let map;
+    let drawingManager;
+    let overlay;
+    let overlayBounds;
+    let overlayPointA;
+    let overlayPointB;
+
+    let rlPressed = false;
+    let rrPressed = false;
+
+    function Copy(id) {
+      const copyText = document.getElementById(id);
+      copyText.select(); // Select the text field
+      document.execCommand('copy'); // Copy the text inside the text field 
+    }
+
+    document.getElementById('toggleOverlayTool').addEventListener('click', event => {
+      const target = document.getElementById('overlay-tool');
+      if (target.className == 'hidden') {
+        target.className = 'visible';
+        document.getElementById('toggleOverlayTool').innerText = '<';
+      } else {
+        target.className = 'hidden';
+        document.getElementById('toggleOverlayTool').innerText = '>';
+      }
+    });
+
+    document.getElementById('rl').addEventListener('mouseup', event => clearInterval(rlPressed));
+    document.getElementById('rl').addEventListener('mousedown', event => {
+      const click = () => {
+        let variation = document.getElementById('variation');
+        let angle = overlay.getAngle() - parseFloat(variation.value);
+
+        overlay.setAngle(angle);
+        document.getElementById('rotation').value = angle;
+      };
+
+      click();
+      if (!rlPressed) rlPressed = setInterval(click, 500);
+    });
+
+    document.getElementById('rr').addEventListener('mouseup', event => clearInterval(rrPressed))
+    document.getElementById('rr').addEventListener('mousedown', event => {
+      const click = () => {
+        let variation = document.getElementById('variation');
+        let angle = overlay.getAngle() + parseFloat(variation.value);
+
+        overlay.setAngle(angle);
+        document.getElementById('rotation').value = angle;
+      };
+
+      click();
+      if (!rrPressed) rrPressed = setInterval(click, 500);
+    });
+
+    document.getElementById('imageForm').addEventListener('submit', event => {
+      event.preventDefault();
+
+      const imageURL = document.getElementById('imageURL').value;
+      overlay.setImage(imageURL);
+    });
+
+    document.getElementById('boundsForm').addEventListener('submit', event => {
+      event.preventDefault();
+
+      try {
+        let bounds;
+        let value = document.getElementById('jbbox').value;
+
+        if (value.trim() != '') {
+          let bbox = JSON.parse(value);
+          bounds = new google.maps.LatLngBounds(
+            new google.maps.LatLng(bbox.south, bbox.west),
+            new google.maps.LatLng(bbox.north, bbox.east)
+          );
+        } else {
+          value = document.getElementById('nbbox').value;
+
+          if (value.trim() != '') {
+            value = value.trim().split(',');
+            bounds = new google.maps.LatLngBounds(
+              new google.maps.LatLng(value[0], value[1]),
+              new google.maps.LatLng(value[2], value[3])
+            );
+          } else {
+            throw new Error('Undefined bounding box!');
+          }
+        }
+
+        updateBBoxValues(bounds);
+        overlay.updateBounds(bounds);
+        overlayPointA.setPosition(bounds.getSouthWest());
+        overlayPointB.setPosition(bounds.getNorthEast());
+        map.fitBounds(bounds);
+      } catch (err) {
+        alert('Error on read bounding box value!');
+        console.error(err);
+      }
+    });
+
+    function updateBBoxValues(bbox) {
+      let sw = bbox.getSouthWest().toJSON();
+      let ne = bbox.getNorthEast().toJSON();
+
+      document.getElementsByName('jbbox')[0].value = JSON.stringify({
+        south: sw.lat, west: sw.lng,
+        north: ne.lat, east: ne.lng
+      });
+      document.getElementsByName('nbbox')[0].value = bbox.toUrlValue();
+      document.getElementsByName('bbox')[0].value = JSON.stringify(bbox.toJSON());
+    }
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 4,
+        center: new google.maps.LatLng(0, 0)
+      });
+
+      class OverlayTool extends window.google.maps.OverlayView {
+
+        constructor(bounds, image, map) {
+          super();
+          this._bounds = bounds;
+          this._image = image;
+          this._map = map;
+          this._target = null;
+          this._angle = 0;
+          this._opacity = 0.5;
+          this.setMap(map);
+        }
+
+        onAdd() {
+          this._target = document.createElement('div');
+          this._target.className = 'overlay';
+          this._target.style.borderStyle = 'none';
+          this._target.style.borderWidth = '0px';
+          this._target.style.transform = 'rotate(' + this._angle + 'deg)';
+          this._target.style.position = 'absolute';
+          this._target.style.opacity = this._opacity;
+          this._target.style.transition = 'transform 0.3s ease-out';
+
+          let img = document.createElement('img');
+          img.src = this._image;
+          img.style.width = '100%';
+          img.style.height = '100%';
+          img.style.position = 'absolute';
+          this._target.appendChild(img);
+
+          let panes = this.getPanes();
+          panes.overlayLayer.appendChild(this._target);
+        }
+
+        draw() {
+          const overlayProjection = this.getProjection();
+          const sw = overlayProjection.fromLatLngToDivPixel(this._bounds.getSouthWest());
+          const ne = overlayProjection.fromLatLngToDivPixel(this._bounds.getNorthEast());
+
+          this._target.style.left = sw.x + 'px';
+          this._target.style.top = ne.y + 'px';
+          this._target.style.width = (ne.x - sw.x) + 'px';
+          this._target.style.height = (sw.y - ne.y) + 'px';
+          this._target.style.opacity = this._opacity;
+          this._target.style.transform = 'rotate(' + this._angle + 'deg)';
+        }
+
+
+        updateBounds(bounds) {
+          this._bounds = bounds;
+          this.draw();
+        }
+
+        onRemove() {
+          if (this._target) {
+            if (this._target.parentNode) this._target.parentNode.removeChild(this._target);
+            this._target = null;
+          }
+        }
+
+        setImage(url) {
+          this._image = url;
+          this._target.children[0].src = url;
+        }
+
+        getAngle() {
+          return this._angle;
+        }
+
+        setAngle(angle) {
+          this._angle = angle;
+          this.draw();
+        }
+
+        setOpacity(opacity) {
+          this._opacity = opacity;
+          this.draw();
+        }
+
+      }
+
+      // Drawing Tools
+      drawingManager = new google.maps.drawing.DrawingManager({
+        drawingMode: null,
+        drawingControl: true,
+        drawingControlOptions: {
+          position: google.maps.ControlPosition.TOP_CENTER,
+          drawingModes: ['marker', 'circle', 'polygon', 'polyline', 'rectangle']
+        },
+      });
+
+      drawingManager.setMap(map);
+
+      drawingManager.addListener('markercomplete', marker => console.log(`[Marker] Position: ${JSON.stringify(marker.getPosition().toJSON())}`));
+      drawingManager.addListener('circlecomplete', circle => console.log(`[Circle] Center: ${JSON.stringify(circle.getCenter().toJSON())} Radius: ${circle.getRadius()}`));
+      drawingManager.addListener('polygoncomplete', polygon => console.log(`[Polygon] Paths: ${JSON.stringify(polygon.getPath())}`));
+      drawingManager.addListener('polylinecomplete', polyline => console.log(`[Polyline] ${JSON.stringify(polyline.getPath())}`));
+      drawingManager.addListener('rectanglecomplete', rectangle => console.log(`[Rectangle] ${JSON.stringify([rectangle.getBounds().getNorthEast().toJSON(), rectangle.getBounds().getSouthWest().toJSON()])}`));
+
+
+      // Overlay Tool
+      overlayBounds = new google.maps.LatLngBounds(new google.maps.LatLng(0, 0), new google.maps.LatLng(0, 0));
+
+      let srcImage = '';
+      overlay = new OverlayTool(overlayBounds, srcImage, map);
+
+      overlayPointA = new google.maps.Marker({
+        position: overlayBounds.getSouthWest(),
+        map: map,
+        draggable: true
+      });
+
+      overlayPointB = new google.maps.Marker({
+        position: overlayBounds.getNorthEast(),
+        map: map,
+        draggable: true
+      });
+
+      const ondrag = () => {
+        let newPointA = overlayPointA.getPosition();
+        let newPointB = overlayPointB.getPosition();
+        let newBounds = new google.maps.LatLngBounds(newPointA, newPointB);
+        updateBBoxValues(newBounds);
+        overlay.updateBounds(newBounds);
+      };
+
+      overlayPointA.addListener('drag', ondrag);
+      overlayPointB.addListener('drag', ondrag);
+    }
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?libraries=drawing&callback=initMap" async defer></script>
+</body>
+
+</html>
