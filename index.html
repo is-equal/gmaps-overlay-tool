@@ -3,8 +3,8 @@
 
 <head>
   <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126200443-1"></script>
-  <script>
+  <script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-126200443-1" async></script>
+  <script type="text/javascript">
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
@@ -14,64 +14,115 @@
   <title>gmaps-overlay-tool</title>
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
   <meta charset="utf-8">
-  <link rel="stylesheet" href="overlay-tool.css" rel="stylesheet" type="text/css" media="all" />
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=drawing"></script>
-  <script type="text/javascript" src="overlay-tool.js" defer></script>
+  <link rel="stylesheet" href="static/tool.css" rel="stylesheet" type="text/css" media="all" />
 </head>
 
 <body>
+  <div id="modal-edit-element" class="hidden">
+    <div id="modal">
+      <header>
+        <h3>Element Attributes</h3>
+        <button type="button" class="action" id="modal-close" onclick="CloseModal()"><i class="close"></i></button>
+      </header>
+      <form id="element-form" onsubmit="event.preventDefault()"></form>
+    </div>
+  </div>
   <div id="map-control">
+    <div class="exports">
+      <button type="button" onclick="ExportGeoJSON()"><i class="download"></i> GeoJSON</button>
+      <button type="button" onclick="ExportCustom()"><i class="download"></i> Custom</button>
+    </div>
+
+    <h3 class="title-tool">
+      Overlay:
+      <button type="button" id="toggleOverlayTool" target="overlay-tool">Hide</button>
+    </h3>
+
     <div id="overlay-tool" class="visible">
-      <button type="button" id="toggleOverlayTool">
-        <</button> <h3>Overlay Tool: </h3>
-          <hr />
-          <form id="imageForm">
-            <h3>Image</h3>
-            <fieldset>
-              <legend for="imageURL">URL</legend>
-              <input type="text" name="imageURL" id="imageURL" required placeholder="Set url image here..." value=""
-                autocomplete="off" />
-              <button type="button" onclick="Copy('imageURL')">Copy</button>
-            </fieldset>
-            <button type="submit">Apply</button>
-          </form>
-          <form id="boundsForm">
-            <h3>Bounding Box</h3>
-            <fieldset>
-              <legend for="jbbox">Bounds (JSON Format)</legend>
-              <input type="text" name="jbbox" id="jbbox" placeholder="Set bbox here..." value="" autocomplete="off" />
-              <button type="button" onclick="Copy('jbbox')">Copy</button>
-            </fieldset>
-            <fieldset>
-              <legend for="nbbox">Bounds (Number Format)</legend>
-              <input type="text" name="nbbox" id="nbbox" placeholder="Set bbox here..." value="" autocomplete="off" />
-              <button type="button" onclick="Copy('nbbox')">Copy</button>
-            </fieldset>
-            <fieldset>
-              <legend for="bbox">Formated Bounding Box</legend>
-              <input type="text" name="bbox" id="bbox" readonly autocomplete="off" />
-              <button type="button" onclick="Copy('bbox')">Copy</button>
-            </fieldset>
-            <button type="submit">Apply</button>
-          </form>
-          <form id="rotationForm">
-            <h3>Rotation</h3>
-            <fieldset>
-              <legend for="rate">Rate</legend>
-              <input type="number" name="rate" id="rate" min="0" max="360" step="0.5" value="0.5" />
-            </fieldset>
-            <fieldset>
-              <legend for="rotation">Rotation</legend>
-              <input type="number" name="rotation" id="rotation" min="0" max="360" step="0.001" value="0" required />
-              <button type="button" onclick="Copy('rotation')">Copy</button>
-            </fieldset>
-            <button type="submit">Apply</button>
-            <button type="button" id="rl">Rotate to Left</button>
-            <button type="button" id="rr">Rotate to Rigth</button>
-          </form>
+      <form id="imageForm" onsubmit="event.preventDefault()">
+        <h3>Image</h3>
+        <fieldset>
+          <legend for="imageURL">
+            <span>URL</span>
+            <button type="button" class="icon" onclick="Copy('imageURL')"><i class="copy"></i></button>
+            <button type="button" class="icon" onclick="RemoveOverlay()"><i class="delete"></i></button>
+          </legend>
+          <input type="text" name="imageURL" id="imageURL" required placeholder="Set url image here..." value=""
+            autocomplete="off" />
+        </fieldset>
+        <fieldset>
+          <legend for="imageOpacity">
+            <span class="no-actions">Opacity</span>
+          </legend>
+          <input type="range" name="imageOpacity" id="imageOpacity" required min="0" step="0.1" max="1" value="" />
+          <span id="imageOpacityValue"></span>
+        </fieldset>
+      </form>
+      <form id="boundsForm" onsubmit="event.preventDefault()">
+        <h3>Bounding Box</h3>
+        <fieldset>
+          <legend for="jbbox">
+            <span>Bounds (JSON Format)</span>
+            <button type="button" class="icon" onclick="Copy('jbbox')"><i class="copy"></i></button>
+          </legend>
+          <input type="text" name="jbbox" id="jbbox" placeholder="Set bbox here..." value="" autocomplete="off" />
+        </fieldset>
+        <fieldset>
+          <legend for="nbbox">
+            <span>Bounds (Number Format)</span>
+            <button type="button" class="icon" onclick="Copy('nbbox')"><i class="copy"></i></button>
+          </legend>
+          <input type="text" name="nbbox" id="nbbox" placeholder="Set bbox here..." value="" autocomplete="off" />
+        </fieldset>
+        <fieldset>
+          <legend for="bbox">
+            <span>Formated Bounding Box</span>
+            <button type="button" class="icon" onclick="Copy('bbox')"><i class="copy"></i></button>
+          </legend>
+          <input type="text" name="bbox" id="bbox" readonly autocomplete="off" />
+        </fieldset>
+      </form>
+      <form id="rotationForm" onsubmit="event.preventDefault()">
+        <h3>Rotation</h3>
+        <fieldset>
+          <legend for="rate">
+            <span>Rate</span>
+            <button type="button" class="icon" onclick="AddRateRotation(false)"><i class="remove"></i></button>
+            <button type="button" class="icon" onclick="AddRateRotation(true)"><i class="add"></i></button>
+          </legend>
+          <input type="number" name="rate" id="rate" min="0" max="360" step="0.5" value="0.5" />
+        </fieldset>
+        <fieldset>
+          <legend for="rotation">
+            <span>Rotation</span>
+            <button type="button" class="icon" onclick="Copy('rotation')"><i class="copy"></i></button>
+            <button type="button" class="icon" onclick="AddRotation(false)"><i class="rotate-left"></i></button>
+            <button type="button" class="icon" onclick="AddRotation(true)"><i class="rotate-right"></i></button>
+          </legend>
+          <input type="number" name="rotation" id="rotation" min="-360" max="360" step="0.001" value="" required />
+        </fieldset>
+      </form>
+    </div>
+
+    <h3 class="title-tool">
+      Elements:
+      <button type="button" id="toggleElementsTool" target="elements-tool">Hide</button>
+    </h3>
+
+    <div id="elements-tool" class="visible">
+
     </div>
   </div>
   <div id="map"></div>
+
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=drawing"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js"></script>
+  <script type="text/javascript" src="https://cdn.rawgit.com/eligrey/FileSaver.js/5ed507ef8aa53d8ecfea96d96bc7214cd2476fd2/FileSaver.min.js"></script>
+  <script type="text/javascript" src="dist/data.js"></script>
+  <script type="text/javascript" src="dist/overlay-tool.js"></script>
+  <script type="text/javascript" src="dist/map.js"></script>
+  <script type="text/javascript" src="dist/ui.js"></script>
+  <script type="text/javascript" src="dist/modal.js"></script>
 </body>
 
 </html>

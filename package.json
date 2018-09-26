@@ -1,0 +1,29 @@
+{
+  "name": "gmaps-overlay-tool",
+  "version": "1.0.0",
+  "description": "Tool for place overlay on google maps",
+  "main": "overlay-tool.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matheusalbino/gmaps-overlay-tool.git"
+  },
+  "keywords": [
+    "gmaps",
+    "google-maps",
+    "google",
+    "javascript",
+    "google-maps-api"
+  ],
+  "author": "Matheus Albino",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/matheusalbino/gmaps-overlay-tool/issues"
+  },
+  "homepage": "https://matheusalbino.github.io/gmaps-overlay-tool/",
+  "devDependencies": {
+    "express": "^4.16.3"
+  }
+}

@@ -1,0 +1,335 @@
+  /* Reset */
+
+  * {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      outline: none;
+      font-size: 100%;
+      font: inherit;
+      vertical-align: baseline;
+      box-sizing: border-box;
+      text-align: left;
+  }
+
+  button,
+  input[type=button] {
+      cursor: pointer;
+  }
+
+  a {
+      text-decoration: none;
+  }
+
+  a:hover,
+  a:active,
+  a:visited {
+      text-decoration: none;
+  }
+
+  ol,
+  ul {
+      list-style: none;
+  }
+
+  table {
+      border-collapse: collapse;
+      border-spacing: 0;
+  }
+
+  ::-webkit-scrollbar-track {
+      background-color: transparent;
+  }
+
+  ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+      background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      background-color: gray;
+  }
+
+  /* Style */
+
+  html,
+  body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 12px;
+      height: 100%;
+  }
+
+  h3 {
+      font-size: 1.2em;
+      font-weight: bolder;
+      margin: 0.5em 0;
+  }
+
+  fieldset {
+      padding: 5px;
+      border: 1px solid #CCCCCC;
+      margin: 10px 0;
+  }
+
+  legend {
+      padding: 0 5px;
+  }
+
+  form legend button,
+  form legend span {
+      display: inline-block;
+      height: 24px;
+  }
+
+  form legend span {
+      padding-right: 10px;
+  }
+
+  form legend span.no-actions {
+      padding-right: 0;
+      line-height: 24px;
+  }
+
+  form legend button {
+      position: relative;
+      top: 8px;
+  }
+
+  input {
+      width: 100%;
+      padding: 10px;
+      height: 44px;
+      border: 1px solid black;
+  }
+
+  input[type="range"] {
+      width: 80%;
+  }
+
+  input[readonly] {
+      background-color: #CCCCCC;
+  }
+
+  button {
+      padding: 10px;
+      height: 44px;
+      min-width: 44px;
+      background-color: #CCCCCC;
+  }
+
+  button:hover {
+      background-color: #a6a6a6;
+  }
+
+  button:active {
+      background-color: gray;
+  }
+
+  hr {
+      background-color: gray;
+      height: 1px;
+  }
+
+  body {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+  }
+
+  #map {
+      height: 100%;
+  }
+
+  #map-control {
+      width: 300px;
+      background-color: white;
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      overflow-y: auto;
+  }
+
+  .title-tool {
+      padding: 5px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      line-height: 32px;
+      border: 1px solid #CCCCCC;
+  }
+
+  .title-tool button {
+      height: 32px;
+      line-height: 12px;
+  }
+
+  #overlay-tool,
+  #elements-tool {
+      padding: 5px;
+  }
+
+  #overlay-tool.visible,
+  #elements-tool.visible {
+      display: block;
+  }
+
+  #overlay-tool.hidden,
+  #elements-tool.hidden {
+      display: none;
+  }
+
+  #overlay-tool form fieldset {
+      margin: 10px auto;
+  }
+
+  #overlay-tool form fieldset span#imageOpacityValue {
+      position: relative;
+      top: -16px;
+      left: 20px;
+  }
+
+  #elements-tool div {
+      height: 44px;
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      grid-gap: 5px;
+      line-height: 44px;
+      padding-left: 10px;
+  }
+
+  #elements-tool div.hightlighted {
+      background-color: #CCCCCC;
+  }
+
+  #elements-tool div button {
+      line-height: 12px;
+  }
+
+  #modal-edit-element {
+      position: fixed;
+      z-index: 1;
+      background-color: rgba(0, 0, 0, 0.8);
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+  }
+
+  #modal-edit-element.visible {
+      display: flex;
+  }
+
+  #modal-edit-element.hidden {
+      display: none;
+  }
+
+  #modal-edit-element #modal header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      border-bottom: 1px solid #a6a6a6;
+  }
+
+  #modal-edit-element #modal header h3 {
+      padding-left: 10px;
+      line-height: 30px;
+  }
+
+  #modal-edit-element #modal {
+      background-color: white;
+      width: 400px;
+      margin: auto;
+      vertical-align: middle;
+  }
+
+  #modal-edit-element #modal form {
+      height: calc(400px - 44px);
+      padding: 10px;
+      overflow: hidden;
+      overflow-y: auto;
+  }
+
+  #modal-edit-element #modal form button {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      float: right;
+  }
+
+  .exports {
+      display: inline-block;
+      padding: 5px;
+      width: 100%;
+      text-align: center;
+  }
+
+  .exports button:first-child {
+      float: left;
+  }
+
+  .exports button:last-child {
+      float: right;
+  }
+
+  button.icon {
+      padding: 0;
+      margin: 0;
+      min-width: 24px;
+      min-height: 24px;
+      width: 24px;
+      height: 24px;
+      background: transparent;
+  }
+
+  button.icon:hover {
+      background-color: #BDBDBD;
+  }
+
+  button.icon i,
+  button.action i {
+      display: block;
+  }
+
+  i {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      margin: auto;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center center;
+  }
+
+  i.copy {
+      background-image: url('icons/ic_content_copy_24px.svg');
+  }
+
+  i.delete {
+      background-image: url('icons/ic_delete_24px.svg');
+  }
+
+  i.rotate-left {
+      background-image: url('icons/ic_rotate_left_24px.svg');
+  }
+
+  i.rotate-right {
+      background-image: url('icons/ic_rotate_right_24px.svg');
+  }
+
+  i.download {
+      background-image: url('icons/ic_file_download_24px.svg');
+  }
+
+  i.edit {
+      background-image: url('icons/ic_mode_edit_24px.svg');
+  }
+
+  i.close {
+      background-image: url('icons/ic_close_24px.svg');
+  }
+
+  i.add {
+      background-image: url('icons/ic_add_24px.svg');
+  }
+
+  i.remove {
+      background-image: url('icons/ic_remove_24px.svg');
+  }
