@@ -6,24 +6,33 @@ const addField = prop => {
     let field = document.createElement('fieldset');
 
     let legend = document.createElement('legend');
-    legend.attributes.for = prop;
+    legend.for = prop;
     legend.innerHTML = `<span class="no-actions">${prop}</span>`;
 
     let input = document.createElement('input');
     input.name = prop;
     input.type = 'text';
 
+    let props = selectedElement.overlay.get('properties') || {};
+    let styles = selectedElement.overlay.get('styles') || {};
+
+    input.value = props[prop] || styles[prop] || '';
+
     field.appendChild(legend);
     field.appendChild(input);
     elementForm.appendChild(field)
 };
 
-_.each(elemProperties, addField);
-_.each(elmStyles, addField);
-
 const OpenModal = () => {
     let modal = document.getElementById('modal-edit-element');
     modal.className = 'visible';
+
+    while (elementForm.hasChildNodes()) {
+        elementForm.removeChild(elementForm.lastChild);
+    }
+
+    _.each(elemProperties, addField);
+    _.each(elmStyles, addField);
 };
 
 const CloseModal = () => {

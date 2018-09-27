@@ -49,17 +49,16 @@ const addElement = data => {
     editButton.onclick = event => selectElement(data);
     item.appendChild(editButton);
 
-    if (!_.isEqual(type, 'overlay')) {
-        let delButton = document.createElement('button');
-        delButton.className = 'action';
-        delButton.innerHTML = '<i class="delete"></i>';
-        delButton.onclick = event => {
-            _.remove(elements, o => _.isEqual(data, o));
-            updateElementsList(elements);
-            elm.setMap(null);
-        };
-        item.appendChild(delButton);
-    }
+    let delButton = document.createElement('button');
+    if (_.isEqual(type, 'overlay')) delButton.disabled = true;
+    delButton.className = 'action';
+    delButton.innerHTML = '<i class="delete"></i>';
+    delButton.onclick = event => {
+        _.remove(elements, o => _.isEqual(data, o));
+        updateElementsList(elements);
+        elm.setMap(null);
+    };
+    item.appendChild(delButton);
 
     document.getElementById('elements-tool').appendChild(item);
 };
@@ -185,7 +184,7 @@ const AddRotation = clockwise => {
 
 const AddRateRotation = clockwise => {
     let rate = parseFloat(overlayRateRotationValue.value) || 0;
-    let step = parseFloat(overlayRateRotationValue.attributes['step'].value) || 0.5;
+    let step = parseFloat(overlayRateRotationValue.step) || 0.5;
 
     if (clockwise) overlayRateRotationValue.value = (rate + step).toString();
     else overlayRateRotationValue.value = (rate - step).toString();

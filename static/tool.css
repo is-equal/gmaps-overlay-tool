@@ -109,7 +109,7 @@
   }
 
   input[readonly] {
-      background-color: #CCCCCC;
+      background-color: rgba(204, 204, 204, 0.5);
   }
 
   button {
@@ -197,7 +197,7 @@
   }
 
   #elements-tool div.hightlighted {
-      background-color: #CCCCCC;
+      background-color: rgba(204, 204, 204, 0.5);
   }
 
   #elements-tool div button {
@@ -286,6 +286,10 @@
   button.icon i,
   button.action i {
       display: block;
+  }
+
+  button[disabled] i {
+      opacity: 0.5;
   }
 
   i {

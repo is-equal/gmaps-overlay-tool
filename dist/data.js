@@ -44,7 +44,6 @@ let googleElmStyles = [
 const featureTemplate = {
     type: 'Feature',
     properties: {},
-    styles: {},
     geometry: {
         type: '',
         coordinates: []
@@ -116,7 +115,10 @@ const ExportGeoJSON = () => {
         if (type)
             return {
                 ...featureTemplate,
-                properties: getProperties(elm),
+                properties: {
+                    ...getProperties(elm),
+                    ...getStyles(elm)
+                },
                 geometry: {
                     ...featureTemplate.geometry,
                     type,
