@@ -84,7 +84,10 @@ const getStyles = ({ type, overlay: elm }) => {
 };
 
 const ExportGeoJSON = () => {
-    let features = _.map(elements, elm => {
+    let elementsData = [...elements];
+    _.remove(elementsData, o => _.isEqual(o.type, 'overlay'));
+
+    let features = _.map(elementsData, elm => {
         let type;
         let coordinates;
 

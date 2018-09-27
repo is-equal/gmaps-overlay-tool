@@ -190,7 +190,7 @@
   #elements-tool div {
       height: 44px;
       display: grid;
-      grid-template-columns: 1fr auto auto;
+      grid-template-columns: 1fr repeat(2, 44px);
       grid-gap: 5px;
       line-height: 44px;
       padding-left: 10px;

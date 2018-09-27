@@ -54,7 +54,7 @@ const addElement = data => {
         delButton.className = 'action';
         delButton.innerHTML = '<i class="delete"></i>';
         delButton.onclick = event => {
-            _.remove(elements, o => data == o);
+            _.remove(elements, o => _.isEqual(data, o));
             updateElementsList(elements);
             elm.setMap(null);
         };
