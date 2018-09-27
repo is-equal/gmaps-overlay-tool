@@ -55,14 +55,34 @@
     window.overlayPointA = new google.maps.Marker({
         position: overlayBounds.getSouthWest(),
         map: map,
+        icon: {
+            url: 'static/markers/push-pin.svg',
+            scaledSize: new google.maps.Size(48, 48),
+            size: new google.maps.Size(24, 48),
+            origin: new google.maps.Point(12, 0),
+        },
         draggable: true
     });
 
     window.overlayPointB = new google.maps.Marker({
         position: overlayBounds.getNorthEast(),
         map: map,
+        icon: {
+            url: 'static/markers/push-pin.svg',
+            scaledSize: new google.maps.Size(48, 48),
+            size: new google.maps.Size(24, 48),
+            origin: new google.maps.Point(12, 0),
+        },
         draggable: true
     });
+
+    const selectElement = () => {
+        highlightedElement = elements[0];
+        updateElementsList(elements);
+    };
+
+    overlayPointA.addListener('dragstart', selectElement);
+    overlayPointB.addListener('dragstart', selectElement);
 
     const ondrag = () => {
         let newPointA = overlayPointA.getPosition();

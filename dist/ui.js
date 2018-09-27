@@ -49,15 +49,17 @@ const addElement = data => {
     editButton.onclick = event => selectElement(data);
     item.appendChild(editButton);
 
-    let delButton = document.createElement('button');
-    delButton.className = 'action';
-    delButton.innerHTML = '<i class="delete"></i>';
-    delButton.onclick = event => {
-        _.remove(elements, o => data == o);
-        updateElementsList(elements);
-        elm.setMap(null);
-    };
-    item.appendChild(delButton);
+    if (!_.isEqual(type, 'overlay')) {
+        let delButton = document.createElement('button');
+        delButton.className = 'action';
+        delButton.innerHTML = '<i class="delete"></i>';
+        delButton.onclick = event => {
+            _.remove(elements, o => data == o);
+            updateElementsList(elements);
+            elm.setMap(null);
+        };
+        item.appendChild(delButton);
+    }
 
     document.getElementById('elements-tool').appendChild(item);
 };
@@ -70,6 +72,9 @@ const updateElementsList = elements => {
     }
     _.each(elements, elm => addElement(elm));
 };
+
+elements.push({ type: 'overlay', overlay });
+updateElementsList(elements);
 
 
 /**

@@ -74,11 +74,12 @@ const saveJSON = json => {
     saveAs(new Blob([JSON.stringify(json, false, 4)], { type: "application/json" }), 'gmaps-overlay-tool.json');
 };
 
-const getProperties = elm => {
-    return elm.get('properties');
+const getProperties = ({ type, overlay: elm }) => {
+    if (type == 'overlay') return { ...elm.get('properties'), image: overlayImage, angle: overlayRotation };
+    else return elm.get('properties');
 };
 
-const getStyles = elm => {
+const getStyles = ({ type, overlay: elm }) => {
     return elm.get('styles');
 };
 
@@ -112,7 +113,7 @@ const ExportGeoJSON = () => {
         if (type)
             return {
                 ...featureTemplate,
-                properties: getProperties(elm.overlay),
+                properties: getProperties(elm),
                 geometry: {
                     ...featureTemplate.geometry,
                     type,
@@ -142,13 +143,16 @@ const ExportCustom = () => {
             type = 'LineString';
             let path = elm.overlay.getPath().getArray();
             coordinates = _.map(path, pos => pos.toJSON());
+        } else if (elm.type == 'overlay') {
+            type = 'Overlay';
+            coordinates = JSON.parse(document.getElementById('bbox').value)
         }
 
         if (type)
             return {
                 ...featureTemplate,
-                properties: getProperties(elm.overlay),
-                styles: getStyles(elm.overlay),
+                properties: getProperties(elm),
+                styles: getStyles(elm),
                 geometry: {
                     ...featureTemplate.geometry,
                     type,
@@ -156,21 +160,6 @@ const ExportCustom = () => {
                 }
             };
     });
-
-    features.push({
-        ...featureTemplate,
-        properties: {
-            image: overlayImage,
-            angle: overlayRotation
-        },
-        styles: {},
-        geometry: {
-            ...featureTemplate.geometry,
-            type: 'Overlay',
-            coordinates: JSON.parse(document.getElementById('bbox').value)
-        }
-    });
-
 
     let data = { type: 'FeatureCollection', features };
     saveJSON(data);
